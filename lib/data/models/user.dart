@@ -1,4 +1,4 @@
-class   DataUser{
+class DataUser{
   List<User> data;
 
   DataUser({

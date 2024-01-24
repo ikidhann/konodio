@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:konodio/data/models/user.dart';
 
-class DioHelper{
+class DioHelper {
   static Dio? dio;
   static String? token;
 
@@ -9,14 +8,25 @@ class DioHelper{
     dio = Dio(BaseOptions(
       baseUrl: 'https://reqres.in/api/',
       receiveDataWhenStatusError: true,
-      connectTimeout: 5000,
-      receiveTimeout: 3000,
     ));
   }
 
-  static Future<DataUser> getData({required String url}) async {
-    final response = await dio!.get(url);
-    print(response.data);
-    return DataUser.fromJson(response.data);
+  /// Get
+  static Future<Response> getData(
+      {required String url, Map<String, dynamic>? query, String? token}) async {
+    var data = await dio!.get(url, queryParameters: query);
+    print(data);
+    return await dio!.get(url, queryParameters: query);
+  }
+
+  /// Get Data Test
+  static Future<Response> getDataTest(
+      {required String url,
+      required Dio dia,
+      Map<String, dynamic>? query,
+      String? token}) async {
+    var data = await dia.get(url, queryParameters: query);
+    print(data);
+    return await dia.get(url, queryParameters: query);
   }
 }

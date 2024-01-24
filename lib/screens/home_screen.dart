@@ -12,9 +12,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
     context.read<UserCubit>().getProfiles();
   }
@@ -27,29 +26,33 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
-          if (state is UserLoading){
-            return const Center(child: CircularProgressIndicator());
+          if (state is UserLoading) {
+            return const Center(
+                key: Key("center"), child: CircularProgressIndicator());
           }
-          if (state is UserLoaded){
+          if (state is UserLoaded) {
             final data = state.users;
             return ListView.builder(
+              key: const Key("list"),
               itemCount: data.length,
-              itemBuilder: (_, index){
+              itemBuilder: (_, index) {
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(data[index].avatar),
                   ),
                   title: Text(
-                    '${data[index].first_name} ${data[index].last_name}',),
-                  subtitle: Text(
-                      data[index].email
+                    '${data[index].first_name} ${data[index].last_name}',
                   ),
+                  subtitle: Text(data[index].email),
                 );
               },
             );
           }
-          if (state is UserError){
-            return Center(child: Text(state.error));
+          if (state is UserError) {
+            return Center(
+              key: const Key("UserError"),
+              child: Text(state.error),
+            );
           }
           return const SizedBox();
         },
@@ -57,39 +60,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-// Scaffold(
-//         appBar: AppBar(
-//           title: Text("List Users"),
-//         ),
-//         body: BlocBuilder<UserCubit, UserState>(
-//           builder: (context, state) {
-//             // BlocProvider.of<UserCubit>(context).getProfiles();
-//             if (state is UserLoading){
-//               return const Center(child: CircularProgressIndicator());
-//             }
-//             if (state is UserLoaded){
-//               final data = state.users;
-//               return ListView.builder(
-//                 itemCount: data.length,
-//                 itemBuilder: (_, index){
-//                   return ListTile(
-//                     leading: CircleAvatar(
-//                       backgroundImage: NetworkImage(data[index].avatar),
-//                     ),
-//                     title: Text(
-//                       '${data[index].first_name} ${data[index].last_name}',),
-//                     subtitle: Text(
-//                         data[index].email
-//                     ),
-//                   );
-//                 },
-//               );
-//             }
-//             if (state is UserError){
-//               return Center(child: Text(state.error));
-//             }
-//             return const SizedBox();
-//           },
-//         ),
-//       ),

@@ -17,6 +17,12 @@ class UserLoaded extends UserState {
   const UserLoaded(this.users);
 }
 
+class UserLoadedTest extends UserState {
+  final List<dynamic> users;
+
+  const UserLoadedTest(this.users);
+}
+
 class UserError extends UserState {
   final String error;
 

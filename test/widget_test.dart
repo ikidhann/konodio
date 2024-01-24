@@ -1,30 +1,69 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:konodio/cubit/user_cubit.dart';
+import 'package:konodio/data/datasources/dio_helper.dart';
+import 'package:konodio/data/models/user.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'package:konodio/main.dart';
+import 'package:konodio/screens/home_screen.dart';
+import 'package:konodio/cubit/user_cubit.dart';
+
+class MockUserCubit extends MockCubit<UserState> implements UserCubit {}
+
+class MockUserState extends Fake implements UserState {}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group("HomeScreen Testing", () {
+    late final UserCubit userCubit;
+    late final DataUser dataUser;
+    List<User> list = [
+      User(
+          id: 0,
+          email: "test@email.com",
+          first_name: "test",
+          last_name: "test",
+          avatar: "test")
+    ];
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    setUpAll(() {
+      userCubit = MockUserCubit();
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    test("getProfiles", () async {
+      userCubit.getProfiles();
+      DioHelper.getData(url: 'users').then((value) {
+        if (value.statusCode == 200) {
+          dataUser = DataUser.fromJson(value.data);
+        }
+      }).catchError((e) {
+        print("Error");
+      });
+      when(() => userCubit.getProfiles())
+          .thenAnswer((invocation) => UserLoaded(dataUser.data));
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    testWidgets("Widget HomeScreen Test", (WidgetTester tester) async {
+      when(() => userCubit.state)
+          .thenAnswer((invocation) => UserLoaded(dataUser.data));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<UserCubit>(
+            create: (_) => UserCubit(),
+            child: const HomeScreen(),
+          ),
+        ),
+      );
+
+      await tester.pump(Duration(seconds: 5));
+
+      expect(
+          find.descendant(
+              of: find.byType(BlocBuilder<UserCubit, UserState>),
+              matching: find.byKey(Key("UserError"))),
+          findsOneWidget);
+    });
   });
 }
