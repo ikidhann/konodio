@@ -13,7 +13,7 @@ class UserCubit extends Cubit<UserState> {
 
   void getProfiles() async {
     emit(UserLoading());
-    DioHelper.getData(url: 'users').then((value) {
+    DioHelper().getData(url: 'users').then((value) {
       if (value.statusCode == 200) {
         DataUser dataUser = DataUser.fromJson(value.data);
         emit(UserLoaded(dataUser.data));

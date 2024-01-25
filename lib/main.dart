@@ -5,7 +5,6 @@ import 'package:konodio/data/datasources/dio_helper.dart';
 import 'package:konodio/screens/home_screen.dart';
 
 Future<void> main() async {
-  await DioHelper.init();
   runApp(const MyApp());
 }
 

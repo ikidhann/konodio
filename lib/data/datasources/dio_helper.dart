@@ -1,26 +1,32 @@
 import 'package:dio/dio.dart';
 
 class DioHelper {
-  static Dio? dio;
+  Dio _dio = Dio();
+  final String _baseUrl = 'https://reqres.in/api/';
   static String? token;
 
-  static init() async {
-    dio = Dio(BaseOptions(
-      baseUrl: 'https://reqres.in/api/',
-      receiveDataWhenStatusError: true,
-    ));
+  DioHelper({Dio? dio}) {
+    _dio = dio ?? Dio();
+    _dio.options.baseUrl = _baseUrl;
   }
 
+  // static init() async {
+  //   _dio = Dio(BaseOptions(
+  //     baseUrl: 'https://reqres.in/api/',
+  //     receiveDataWhenStatusError: true,
+  //   ));
+  // }
+
   /// Get
-  static Future<Response> getData(
+  Future<dynamic> getData(
       {required String url, Map<String, dynamic>? query, String? token}) async {
-    var data = await dio!.get(url, queryParameters: query);
+    var data = await _dio.get(url, queryParameters: query);
     print(data);
-    return await dio!.get(url, queryParameters: query);
+    return await _dio.get(url, queryParameters: query);
   }
 
   /// Get Data Test
-  static Future<Response> getDataTest(
+  Future<dynamic> getDataTest(
       {required String url,
       required Dio dia,
       Map<String, dynamic>? query,
