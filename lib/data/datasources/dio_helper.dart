@@ -9,14 +9,11 @@ class DioHelper{
     dio = Dio(BaseOptions(
       baseUrl: 'https://reqres.in/api/',
       receiveDataWhenStatusError: true,
-      connectTimeout: 5000,
-      receiveTimeout: 3000,
     ));
   }
 
   static Future<DataUser> getData({required String url}) async {
     final response = await dio!.get(url);
-    print(response.data);
     return DataUser.fromJson(response.data);
   }
 }
