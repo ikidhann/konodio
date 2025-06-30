@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:konodio/cubit/user_cubit.dart';
+import 'package:konodio/cubit/villa_cubit.dart';
 
 import '../data/datasources/remote_datasource.dart';
 
@@ -15,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<UserCubit>().getProfiles();
+    context.read<VillaCubit>().getVillas();
   }
 
   @override
@@ -24,31 +25,28 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text("List Users"),
       ),
-      body: BlocBuilder<UserCubit, UserState>(
+      body: BlocBuilder<VillaCubit, VillaState>(
         builder: (context, state) {
-          if (state is UserLoading) {
+          if (state is VillaLoading) {
             return const Center(
                 key: Key("center"), child: CircularProgressIndicator());
           }
-          if (state is UserLoaded) {
-            final data = state.users;
+          if (state is VillaLoaded) {
+            final data = state.villas;
             return ListView.builder(
               key: const Key("list"),
               itemCount: data.length,
               itemBuilder: (_, index) {
                 return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(data[index].avatar),
-                  ),
                   title: Text(
-                    '${data[index].first_name} ${data[index].last_name}',
+                    '${data[index].name} ${data[index].address}',
                   ),
-                  subtitle: Text(data[index].email),
+                  subtitle: Text("Capacity: ${data[index].capacity}"),
                 );
               },
             );
           }
-          if (state is UserError) {
+          if (state is VillaError) {
             return Center(
               key: const Key("UserError"),
               child: Text(state.error),

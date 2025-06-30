@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 class DioHelper {
   Dio _dio = Dio();
-  final String _baseUrl = 'https://reqres.in/api/';
+  final String _baseUrl = 'https://api-rilex.aether.id/v1/';
   static String? token;
 
   DioHelper({Dio? dio}) {

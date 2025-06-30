@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:konodio/data/datasources/dio_helper.dart';
 
+const successMessage = {"message": "Success"};
+
 void main() {
   final dio = Dio();
   final dioAdapter = DioAdapter(dio: dio);
@@ -19,7 +21,7 @@ void main() {
         dioAdapter.onGet('$baseUrl', (request) {
           request.reply(
             200,
-            {"message": "Success"},
+            successMessage,
           );
         }, data: null, queryParameters: {}, headers: {});
 
